@@ -16,6 +16,13 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 builder.Services.AddScoped<IPlayerRepository,SqlPlayerRepository>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("AngularUIApplication", opt =>
+     {
+         opt.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+     });
+});
 
 var app = builder.Build();
 
@@ -27,7 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AngularUIApplication");
 app.UseAuthorization();
 
 app.MapControllers();
