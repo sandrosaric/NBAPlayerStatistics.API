@@ -13,11 +13,13 @@ namespace NBAPlayerStatistics.API.Controllers
     {
         private readonly IPlayerRepository _playerRepository;
         private readonly IMapper _mapper;
+        private readonly IImageRepository _imageRepository;
 
-        public PlayersController(IPlayerRepository playerRepository,IMapper mapper)
+        public PlayersController(IPlayerRepository playerRepository,IMapper mapper,IImageRepository imageRepository)
         {
             _playerRepository = playerRepository;
             _mapper = mapper;
+            _imageRepository = imageRepository;
         }
         [HttpGet("[controller]")]
         public async Task<ActionResult<List<PlayerModel>>> GetAll()
@@ -121,6 +123,27 @@ namespace NBAPlayerStatistics.API.Controllers
             {
                 return this.StatusCode(500, ex.Message);
             }
+        }
+
+
+        [HttpPost("[controller]/{playerId:guid}/upload-image")]
+        public async Task<ActionResult> UploadImage([FromRoute] Guid playerId,IFormFile profileImage)
+        {
+            if(await _playerRepository.ExistsAsync(playerId))
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
+                var fileImagePath = await _imageRepository.UploadImageAsync(profileImage, fileName);
+                bool success = await _playerRepository.UpdateProfileImgAsync(playerId, fileImagePath);
+                if (success)
+                {
+                    return Ok(fileImagePath);
+                }
+                else
+                {
+                    return this.StatusCode(StatusCodes.Status500InternalServerError, "Error uploading image :(");
+                }
+            }
+            return this.StatusCode(StatusCodes.Status404NotFound, "Image not found.");
         }
     }
 }

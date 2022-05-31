@@ -8,6 +8,7 @@
         Task<bool> ExistsAsync(Guid playerId);
         Task<Player> DeletePlayerAsync(Guid playerId);
         Task<Player> CreatePlayerAsync(Player player);
+        Task<bool> UpdateProfileImgAsync(Guid playerId, string profileImageUrl);
 
     }
 }

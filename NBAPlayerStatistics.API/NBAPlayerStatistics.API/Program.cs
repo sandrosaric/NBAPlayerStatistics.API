@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using NBAPlayerStatistics.API.DataModels;
 using NBAPlayerStatistics.API.DataModels.Repositories;
 
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddScoped<IPlayerRepository,SqlPlayerRepository>();
 builder.Services.AddScoped<IPositionRepository,SqlPositionRepository>();
 builder.Services.AddScoped<IClubRepository,SqlClubRepository>();
+builder.Services.AddScoped<IImageRepository,LocalStorageRepository>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddCors(opt =>
 {
@@ -36,6 +38,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "Resources")),
+    RequestPath = "/Resources"
+});
 app.UseCors("AngularUIApplication");
 app.UseAuthorization();
 

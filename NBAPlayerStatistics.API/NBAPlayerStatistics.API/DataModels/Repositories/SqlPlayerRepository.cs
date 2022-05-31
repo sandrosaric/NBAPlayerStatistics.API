@@ -69,6 +69,18 @@ namespace NBAPlayerStatistics.API.DataModels.Repositories
             return null;
 
         }
+
+        public async Task<bool> UpdateProfileImgAsync(Guid playerId, string profileImageUrl)
+        {
+            var player = await GetPlayerByIdAsync(playerId);
+            if(player != null)
+            {
+                player.ProfileImageUrl = profileImageUrl;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
     }
 
