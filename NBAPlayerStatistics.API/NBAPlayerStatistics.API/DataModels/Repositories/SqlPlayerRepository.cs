@@ -11,6 +11,26 @@ namespace NBAPlayerStatistics.API.DataModels.Repositories
             _context = context;
         }
 
+        public async Task<Player> CreatePlayerAsync(Player player)
+        {
+            player.Id = Guid.NewGuid();
+            await _context.AddAsync(player);
+            await _context.SaveChangesAsync();
+            return player;
+        }
+
+        public async Task<Player> DeletePlayerAsync(Guid playerId)
+        {
+            var playerDb = await GetPlayerByIdAsync(playerId);
+            if(playerDb != null)
+            {
+                _context.Remove(playerDb);
+                await _context.SaveChangesAsync();
+                return playerDb;
+            }
+            return null;
+        }
+
         public async Task<bool> ExistsAsync(Guid playerId)
         {
             return await _context.Players.AnyAsync(x => x.Id == playerId);  

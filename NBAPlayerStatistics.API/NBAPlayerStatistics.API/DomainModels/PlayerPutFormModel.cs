@@ -1,6 +1,6 @@
 ﻿namespace NBAPlayerStatistics.API.DomainModels
 {
-    public class PlayerFormModel
+    public class PlayerPutFormModel
     {
       
         public string FirstName { get; set; }

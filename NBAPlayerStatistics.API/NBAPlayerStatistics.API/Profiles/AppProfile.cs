@@ -11,7 +11,8 @@ namespace NBAPlayerStatistics.API.Profiles
             this.CreateMap<Player, PlayerModel>().ReverseMap();
             this.CreateMap<Club, ClubModel>().ReverseMap();
             this.CreateMap<Position, PositionModel>().ReverseMap();
-            this.CreateMap<PlayerFormModel, Player>().ReverseMap();
+            this.CreateMap<PlayerPutFormModel, Player>().ReverseMap();
+            this.CreateMap<PlayerPostFormModel, Player>().ReverseMap();
         }
     }
 }
