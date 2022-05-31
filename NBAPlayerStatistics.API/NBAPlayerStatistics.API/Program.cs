@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using NBAPlayerStatistics.API.DataModels;
 using NBAPlayerStatistics.API.DataModels.Repositories;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,10 @@ builder.Services.AddCors(opt =>
      {
          opt.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
      });
+});
+builder.Services.AddFluentValidation(fv =>
+{
+    fv.RegisterValidatorsFromAssemblyContaining<Program>();
 });
 
 var app = builder.Build();

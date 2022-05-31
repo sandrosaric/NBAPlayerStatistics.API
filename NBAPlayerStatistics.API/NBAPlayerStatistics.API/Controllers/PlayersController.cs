@@ -129,20 +129,33 @@ namespace NBAPlayerStatistics.API.Controllers
         [HttpPost("[controller]/{playerId:guid}/upload-image")]
         public async Task<ActionResult> UploadImage([FromRoute] Guid playerId,IFormFile profileImage)
         {
-            if(await _playerRepository.ExistsAsync(playerId))
+            List<string> allowedExtensions = new List<string>()
             {
-                var fileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
-                var fileImagePath = await _imageRepository.UploadImageAsync(profileImage, fileName);
-                bool success = await _playerRepository.UpdateProfileImgAsync(playerId, fileImagePath);
-                if (success)
-                {
-                    return Ok(fileImagePath);
-                }
-                else
-                {
-                    return this.StatusCode(StatusCodes.Status500InternalServerError, "Error uploading image :(");
+                ".png",
+                ".gif",
+                ".jpg",
+                ".jpeg"
+            };
+            if(profileImage != null && profileImage.Length > 0)
+            {
+                if (allowedExtensions.Contains(Path.GetExtension(profileImage.FileName))){
+                    if (await _playerRepository.ExistsAsync(playerId))
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
+                        var fileImagePath = await _imageRepository.UploadImageAsync(profileImage, fileName);
+                        bool success = await _playerRepository.UpdateProfileImgAsync(playerId, fileImagePath);
+                        if (success)
+                        {
+                            return Ok(fileImagePath);
+                        }
+                        else
+                        {
+                            return this.StatusCode(StatusCodes.Status500InternalServerError, "Error uploading image :(");
+                        }
+                    }
                 }
             }
+           
             return this.StatusCode(StatusCodes.Status404NotFound, "Image not found.");
         }
     }
