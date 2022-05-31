@@ -15,6 +15,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped<IPlayerRepository,SqlPlayerRepository>();
+builder.Services.AddScoped<IPositionRepository,SqlPositionRepository>();
+builder.Services.AddScoped<IClubRepository,SqlClubRepository>();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddCors(opt =>
 {
